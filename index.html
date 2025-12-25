@@ -39,7 +39,7 @@
     @keyframes fall { to { transform: translateY(110vh) translateX(var(--drift)); } }
 
     /* Cây thông 3D */
-    .tree3d { position: relative; margin-top: 40px; }
+    .tree3d { position: relative; margin-top: 20px; }
     .layer {
       position: relative;
       width: 0; height: 0;
@@ -108,13 +108,18 @@
       box-shadow: 0 8px 22px rgba(0,0,0,0.38);
       cursor: pointer; transition: transform .25s;
     }
-    .gift.left  { left: -210px; background: #b22222; }
-    .gift.right { left: 210px; background: #0f58c2; }
+    .gift.left  { left: -200px; background: #b22222; }
+    .gift.right { left: 200px; background: #0f58c2; }
     .gift:hover { transform: translateY(-6px) scale(1.05); }
+    .gift::before, .gift::after {
+      content:""; position:absolute; background: #ffd86b;
+    }
+    .gift::before { width: 12px; height: 100%; left: calc(50% - 6px); top: 0; }
+    .gift::after  { height: 12px; width: 100%; left: 0; top: calc(50% - 6px); }
 
     /* Panel câu hỏi */
-    .panel { margin-top: 20px; text-align: center; }
-    .panel p { margin: 10px 0; }
+    .panel { margin-top: 10px; text-align: center; }
+    .panel p { margin: 8px 0; }
     .btn {
       padding: 10px 20px; margin: 5px;
       background: #ffd86b; border: none; border-radius: 8px;
@@ -159,13 +164,4 @@
       f.className='flake';
       f.style.left=Math.random()*100+'vw';
       f.style.setProperty('--dur',(5+Math.random()*5)+'s');
-      f.style.setProperty('--delay',(Math.random()*5)+'s');
-      f.style.setProperty('--drift',(Math.random()*60-30)+'px');
-      snow.appendChild(f);
-    }
-
-    // Đèn LED
-    const tree=document.getElementById('tree');
-    const colors=['#ffd86b','#ff4d4d','#3da5ff'];
-    for(let i=0;i<20;i++){
-      const led=document.createElement('div');
+      f.style.set
