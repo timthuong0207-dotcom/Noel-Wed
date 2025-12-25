@@ -9,12 +9,11 @@
       height: 100vh;
       background: linear-gradient(to top, #b31217, #ff5c73, #ff9aa2);
       font-family: "Courier New", monospace;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
       overflow: hidden;
-      color: white;
     }
     h1 {
       margin: 20px 0 10px;
@@ -52,15 +51,19 @@
       border-right: 150px solid transparent;
       border-bottom: 280px solid #1aa34a;
     }
-    .trunk {
-      position: absolute; bottom: -80px; left: -35px;
-      width: 70px; height: 80px; background: #8b5a2b; border-radius: 6px;
-    }
     .star {
-      position: absolute; top: -120px; left: 50%; transform: translateX(-50%);
+      position: absolute;
+      top: -120px; left: 50%; transform: translateX(-50%);
       width: 100px; height: 100px; background: #ffd86b;
       clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 72%,21% 91%,32% 57%,2% 35%,39% 35%);
       box-shadow: 0 0 20px gold, 0 0 40px rgba(255,216,107,0.6);
+    }
+    .trunk {
+      width: 70px; height: 80px;
+      background: #8b5a2b;
+      margin: 0 auto;
+      border-radius: 6px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
     }
 
     /* Đèn LED */
@@ -71,24 +74,31 @@
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     /* Hộp quà */
+    .gifts {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      margin-top: 20px;
+    }
     .gift {
-      position: absolute; bottom: -30px;
+      position: relative;
       width: 140px; height: 140px;
       border: 6px solid #ffd86b; border-radius: 12px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.38); cursor: pointer;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.38);
+      cursor: pointer;
     }
-    .gift.left  { left: -200px; background: #b22222; }
-    .gift.right { left: 200px; background: #0f58c2; }
+    .gift.red  { background: #b22222; }
+    .gift.blue { background: #0f58c2; }
     .gift::before, .gift::after {
       content: ""; position: absolute; background: #ffd86b;
     }
     .gift::before { width: 12px; height: 100%; left: calc(50% - 6px); top: 0; }
     .gift::after  { height: 12px; width: 100%; left: 0; top: calc(50% - 6px); }
 
-    /* Panel câu hỏi giữa màn hình, nút to */
+    /* Panel câu hỏi */
     .panel {
-      position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%,-50%);
+      position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center; z-index: 20;
     }
     .panel p { font-size: 28px; margin-bottom: 16px; }
@@ -110,9 +120,12 @@
 
   <div class="tree" id="tree">
     <div class="star"></div>
-    <div class="trunk"></div>
-    <div class="gift left"></div>
-    <div class="gift right"></div>
+  </div>
+  <div class="trunk"></div>
+
+  <div class="gifts">
+    <div class="gift red" onclick="leftGift()"></div>
+    <div class="gift blue" onclick="rightGift()"></div>
   </div>
 
   <div class="panel" id="panel">
@@ -146,7 +159,7 @@
       led.className = 'led';
       led.style.background = colors[i % colors.length];
       led.style.left = (Math.random() * 280 - 140) + 'px';
-      led.style.bottom = (Math.random() * 260) + 'px';
+      led.style.top = (Math.random() * 260) + 'px';
       tree.appendChild(led);
     }
 
@@ -155,37 +168,17 @@
       document.getElementById('question').textContent = text;
       document.getElementById('answers').innerHTML = buttonsHTML;
     }
-
     function yes() {
       updateQuestion('Chọn quà trái hay phải?', `
         <button class="btn" onclick="leftGift()">Trái</button>
         <button class="btn" onclick="rightGift()">Phải</button>
       `);
     }
-
     function no() {
       updateQuestion('Nhận quà đi…', `
         <button class="btn" onclick="no()">Không</button>
       `);
     }
-
     function rightGift() {
-      updateQuestion('Chúc bạn đêm Noel ấm áp, vui vẻ Giáng Sinh an lànhhhhh', '');
-    }
-
-    function leftGift() {
-      updateQuestion('Ghi điều ước của bạn vào giấy Giáng Sinh:', `
-        <input id="wish" placeholder="Điều ước..." style="padding:10px; font-size:16px;">
-        <button class="btn" onclick="sendWish()">Gửi</button>
-      `);
-    }
-
-    function sendWish() {
-      const wishEl = document.getElementById('wish');
-      const wish = wishEl ? wishEl.value : '';
-      updateQuestion('Từ Ông Già Noel',
-        '"' + wish + '" – Ta chúc điều ước của con sẽ thành sự thật.');
-    }
-  </script>
-</body>
-</html>
+      updateQuestion('Chúc bạn đêm Noel ấm áp, vui vẻ Giáng Sinh an lànhhhhh', `
+        <button class="btn" onclick="resetPanel()">Cảm
