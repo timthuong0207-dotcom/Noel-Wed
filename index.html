@@ -1,535 +1,171 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Giáng Sinh ấm áp 🎄❄️</title>
   <style>
-    /* Nền: trên nhạt dần, dưới đỏ đậm */
-    :root {
-      --bg-top: #ff9aa2;  /* đỏ hồng nhạt */
-      --bg-mid: #ff5c73;  /* đỏ vừa */
-      --bg-bottom: #b31217; /* đỏ đậm */
-      --green: #1aa34a;
-      --brown: #8b5a2b;
-      --gold: #ffd86b;
-      --blue: #0f58c2;
-      --red: #b22222;
-    }
-
-    html, body {
-      margin: 0;
-      height: 100%;
-    }
-
     body {
-      background: linear-gradient(to bottom, var(--bg-top), var(--bg-mid) 35%, var(--bg-bottom) 100%);
-      color: #fff;
-      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(to top, #b31217, #ff5c73, #ff9aa2);
+      color: white;
+      font-family: "Courier New", monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       overflow: hidden;
     }
+    h1 { margin: 20px 0; text-shadow: 0 0 8px rgba(255,255,255,0.6); }
 
-    /* Ánh sáng chạy qua: trên phải qua trái, dưới trái qua phải */
-    .light-sweep {
-      position: fixed;
-      pointer-events: none;
-      inset: 0;
+    /* Ánh sáng chạy qua */
+    .sweep { position: fixed; inset: 0; pointer-events: none; }
+    .line {
+      position: absolute; height: 160px; left: -40%; right: -40%;
+      background: linear-gradient(to left, transparent, rgba(255,255,255,0.6), transparent);
+      opacity: 0.25; filter: blur(10px);
     }
-    .sweep-top, .sweep-bottom {
-      position: absolute;
-      height: 180px;
-      left: -40%;
-      right: -40%;
-      filter: blur(10px);
-      opacity: 0.25;
-      background: linear-gradient(to left,
-        rgba(255,255,255,0) 0%,
-        rgba(255,255,255,0.7) 40%,
-        rgba(255,255,255,0) 80%);
-    }
-    .sweep-top {
-      top: 8%;
-      transform: rotate(-2deg);
-      animation: sweepLeft 7s linear infinite;
-    }
-    .sweep-bottom {
-      bottom: 8%;
-      transform: rotate(2deg);
-      animation: sweepRight 7s linear infinite;
-    }
-    @keyframes sweepLeft {
-      0%   { transform: translateX(40%) rotate(-2deg); }
-      50%  { transform: translateX(-40%) rotate(-2deg); }
-      100% { transform: translateX(40%) rotate(-2deg); }
-    }
-    @keyframes sweepRight {
-      0%   { transform: translateX(-40%) rotate(2deg); }
-      50%  { transform: translateX(40%) rotate(2deg); }
-      100% { transform: translateX(-40%) rotate(2deg); }
-    }
+    .top { top: 10%; animation: sweepLeft 7s linear infinite; }
+    .bottom { bottom: 10%; animation: sweepRight 7s linear infinite; }
+    @keyframes sweepLeft { 0%{transform:translateX(40%);}50%{transform:translateX(-40%);}100%{transform:translateX(40%);} }
+    @keyframes sweepRight{ 0%{transform:translateX(-40%);}50%{transform:translateX(40%);}100%{transform:translateX(-40%);} }
 
-    /* Kiểu chữ dạng “digital” */
-    .digital {
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      text-shadow:
-        0 1px 0 rgba(255,255,255,0.3),
-        0 0 6px rgba(255,255,255,0.25),
-        0 0 12px rgba(255,255,255,0.2);
-    }
-
-    h1 {
-      margin: 18px 0 8px;
-    }
-
-    /* Tuyết rơi: layer tuyết + layer băng */
-    .snow, .ice {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-    }
-    .flake, .shard {
-      position: absolute;
-      top: -10px;
-      will-change: transform;
-    }
+    /* Tuyết */
+    .snow { position: fixed; inset: 0; pointer-events: none; }
     .flake {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: rgba(255,255,255,0.9);
-      box-shadow: 0 0 6px rgba(255,255,255,0.8);
-      animation: fallSnow var(--dur) linear var(--delay) infinite;
+      position: absolute; top: -10px; width: 6px; height: 6px; border-radius: 50%;
+      background: white; opacity: 0.8;
+      animation: fall linear var(--dur) var(--delay) infinite;
     }
-    .shard {
-      width: 0; height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-top: 10px solid rgba(176,224,230,0.85); /* màu băng xanh nhạt */
-      filter: drop-shadow(0 0 6px rgba(176,224,230,0.65));
-      animation: fallIce var(--dur) linear var(--delay) infinite;
-    }
-    @keyframes fallSnow {
-      to { transform: translateY(110vh) translateX(var(--drift)); }
-    }
-    @keyframes fallIce {
-      to { transform: translateY(110vh) translateX(calc(var(--drift) * 0.6)) rotate(18deg); }
-    }
+    @keyframes fall { to { transform: translateY(110vh) translateX(var(--drift)); } }
 
-    /* Sân khấu cây thông */
-    .stage {
+    /* Cây thông 3D */
+    .tree3d { position: relative; margin-top: 40px; }
+    .layer {
       position: relative;
-      width: 800px;
-      height: 520px;
-      margin-top: 6px;
+      width: 0; height: 0;
+      margin: 0 auto;
+      border-left: 120px solid transparent;
+      border-right: 120px solid transparent;
+      border-bottom: 120px solid #1aa34a;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.4));
+    }
+    .layer2 { border-left-width: 140px; border-right-width: 140px; border-bottom-width: 140px; margin-top: -40px; }
+    .layer3 { border-left-width: 160px; border-right-width: 160px; border-bottom-width: 160px; margin-top: -50px; }
+
+    /* Nhánh chìa ra */
+    .layer::before, .layer::after {
+      content:""; position: absolute; top: 40%;
+      width: 0; height: 0;
+      border-top: 40px solid transparent;
+      border-bottom: 40px solid transparent;
+    }
+    .layer::before {
+      left: -60px;
+      border-right: 60px solid #1aa34a;
+      transform: rotate(-10deg);
+    }
+    .layer::after {
+      right: -60px;
+      border-left: 60px solid #1aa34a;
+      transform: rotate(10deg);
     }
 
-    /* Cây thông bằng chấm xanh lá, thân nâu */
-    .tree { position: absolute; left: 50%; bottom: 120px; transform: translateX(-50%); width: 0; height: 0; }
-    .dot {
-      position: absolute;
-      width: 7px; height: 7px; border-radius: 50%;
-      opacity: 0; transform: scale(0.2);
-      animation: dotAppear 0.45s forwards ease-out;
+    /* Thân cây */
+    .trunk {
+      width: 60px; height: 80px;
+      background: #8b5a2b;
+      margin: 0 auto;
+      border-radius: 6px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
     }
-    @keyframes dotAppear { to { opacity: 1; transform: scale(1); } }
 
-    /* Sao trên đỉnh */
+    /* Sao */
     .star {
       position: absolute;
-      left: 50%; top: -130px; transform: translateX(-50%);
-      width: 110px; height: 110px;
-      background: var(--gold);
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 80px;
+      background: #ffd86b;
       clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 72%,21% 91%,32% 57%,2% 35%,39% 35%);
-      box-shadow:
-        0 0 24px 8px rgba(255,216,107,0.9),
-        0 0 60px 22px rgba(255,216,107,0.45);
-      opacity: 0; transform-origin: center;
+      box-shadow: 0 0 20px gold, 0 0 40px rgba(255,216,107,0.6);
+      animation: twinkle 2s infinite;
     }
-    .star.fly {
-      animation: starFly 1.8s ease-out forwards;
-    }
-    @keyframes starFly {
-      from { transform: translate(-50%,-40vh) scale(0.7); opacity: 0; }
-      to   { transform: translate(-50%,0) scale(1);   opacity: 1; }
-    }
+    @keyframes twinkle { 50% { filter: brightness(1.3); } }
 
-    /* Hai hộp quà to: xanh dương và đỏ, đứng cân hai bên gốc cây */
+    /* Đèn LED */
+    .led {
+      position: absolute; width: 10px; height: 10px; border-radius: 50%;
+      box-shadow: 0 0 8px rgba(255,255,255,0.6);
+      animation: blink 2s infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0.4;} }
+
+    /* Hộp quà */
     .gift {
       position: absolute; bottom: -30px;
       width: 140px; height: 140px;
-      border: 6px solid var(--gold);
-      border-radius: 12px;
+      border: 6px solid #ffd86b; border-radius: 12px;
       box-shadow: 0 8px 22px rgba(0,0,0,0.38);
-      cursor: pointer;
-      transition: transform .25s;
+      cursor: pointer; transition: transform .25s;
     }
-    .gift.left  { left: -250px; background: linear-gradient(135deg, var(--red), #ff4d4d); }
-    .gift.right { left:  250px; background: linear-gradient(135deg, var(--blue), #3da5ff); }
+    .gift.left  { left: -210px; background: #b22222; }
+    .gift.right { left: 210px; background: #0f58c2; }
     .gift:hover { transform: translateY(-6px) scale(1.05); }
-    .gift::before, .gift::after { content:""; position:absolute; background: var(--gold); }
-    .gift::before { width: 12px; height:100%; left: calc(50% - 6px); top:0; }
-    .gift::after  { height: 12px; width:100%; left:0; top: calc(50% - 6px); }
 
-    /* Câu hỏi + nút */
-    .panel {
-      position: relative;
-      margin-top: 10px;
-      display: none;
-      text-align: center;
-    }
+    /* Panel câu hỏi */
+    .panel { margin-top: 20px; text-align: center; }
     .panel p { margin: 10px 0; }
     .btn {
-      display: inline-block;
-      padding: 10px 16px;
-      margin: 6px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 700;
-      cursor: pointer;
-      background: var(--gold);
-      color: #5a3a00;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-      transition: transform .15s, filter .2s;
+      padding: 10px 20px; margin: 5px;
+      background: #ffd86b; border: none; border-radius: 8px;
+      cursor: pointer; font-weight: bold;
     }
-    .btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
-
-    /* Hiệu ứng “tuyết phủ lên nút” (sau khi bấm Có) */
-    .btn.snowy {
-      position: relative;
-      overflow: hidden;
-    }
-    .btn.snowy::after {
-      content:"";
-      position:absolute; left:0; top:-6px; right:0; height: 14px;
-      background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.5));
-      border-radius: 6px 6px 0 0;
-      filter: drop-shadow(0 2px 3px rgba(255,255,255,0.6));
-      animation: settleSnow .6s ease-out forwards;
-    }
-    @keyframes settleSnow {
-      from { transform: translateY(-12px); opacity: 0; }
-      to   { transform: translateY(0);     opacity: 1; }
-    }
-
-    /* Dòng nhắc “Nhận quà đi” mờ dần (khi bấm Không) */
-    .hint {
-      margin-top: 8px;
-      height: 24px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity .5s;
-    }
-    .hint.show { opacity: 1; }
-    .btn.no-shrink {
-      transform-origin: center;
-    }
-
-    /* Chọn trái/phải */
-    .panel-choose { display: none; margin-top: 6px; text-align:center; }
-
-    /* Thiệp và giấy điều ước */
-    .card {
-      display: none;
-      width: 80%;
-      max-width: 640px;
-      margin-top: 12px;
-      background: #fff;
-      color: #222;
-      padding: 18px;
-      border-radius: 12px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.3);
-    }
-    .card h3 { margin: 0 0 8px; }
-    .paper {
-      display: none;
-      width: 80%;
-      max-width: 520px;
-      margin-top: 12px;
-      background:
-        linear-gradient(135deg, #fffaf0 0%, #fff5e6 100%),
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg"></svg>');
-      color: #2b2b2b;
-      padding: 18px;
-      border-radius: 14px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-      border: 8px solid #e74c3c;
-    }
-    .paper h3 { margin: 0 0 10px; }
-    .paper input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ddd;
-      font-size: 16px;
-    }
-    .paper .btn { margin-top: 10px; }
-
-    /* Dòng “digital” lời thì thầm */
-    #type {
-      margin-top: 8px;
-      min-height: 24px;
-    }
-
-    /* Nút Cảm Ơn */
-    .thanks {
-      display: none;
-      margin-top: 8px;
-    }
+    .btn:hover { filter: brightness(1.2); }
   </style>
 </head>
 <body>
-  <div class="light-sweep">
-    <div class="sweep-top"></div>
-    <div class="sweep-bottom"></div>
+  <div class="sweep">
+    <div class="line top"></div>
+    <div class="line bottom"></div>
   </div>
 
-  <h1 class="digital">Giáng Sinh ấm áp 🎄❄️</h1>
-  <div id="type" class="digital"></div>
+  <h1>GIÁNG SINH ẤM ÁP 🎄❄️</h1>
 
-  <div class="stage">
-    <!-- Cây thông bằng chấm -->
-    <div id="tree" class="tree">
-      <div id="star" class="star"></div>
-      <!-- Hai hộp quà lớn -->
-      <div id="giftLeft" class="gift left" title="Quà trái"></div>
-      <div id="giftRight" class="gift right" title="Quà phải"></div>
+  <div class="tree3d" id="tree">
+    <div class="star"></div>
+    <div class="layer layer1"></div>
+    <div class="layer layer2"></div>
+    <div class="layer layer3"></div>
+    <div class="trunk"></div>
+    <div class="gift left"></div>
+    <div class="gift right"></div>
+  </div>
+
+  <div class="panel" id="panel">
+    <p id="question">Muốn nhận quà hong?</p>
+    <div id="answers">
+      <button class="btn" onclick="yes()">Có</button>
+      <button class="btn" onclick="no()">Không</button>
     </div>
   </div>
 
-  <!-- Câu hỏi -->
-  <div id="panelQ" class="panel">
-    <p class="digital">Muốn nhận quà hong?</p>
-    <button id="btnYes" class="btn">Có</button>
-    <button id="btnNo" class="btn no-shrink">Không</button>
-    <div id="hint" class="hint digital">Nhận quà đi…</div>
-  </div>
-
-  <!-- Chọn trái/phải -->
-  <div id="panelChoose" class="panel-choose">
-    <p class="digital">Chọn quà: trái hay phải?</p>
-    <button id="chooseLeft" class="btn">Trái</button>
-    <button id="chooseRight" class="btn">Phải</button>
-  </div>
-
-  <!-- Giấy phong cách Giáng sinh để ghi điều ước -->
-  <div id="paper" class="paper">
-    <h3>Giấy phong cách Giáng Sinh</h3>
-    <p>Ghi điều ước của bạn:</p>
-    <input id="wish" placeholder="Điều ước đêm Noel…" />
-    <button id="sendWish" class="btn">Gửi điều ước</button>
-  </div>
-
-  <!-- Thiệp lời chúc nếu chọn quà phải -->
-  <div id="cardRight" class="card">
-    <h3>🎁 Thiệp Giáng Sinh</h3>
-    <p>Chúc bạn đêm Noel ấm áp, vui vẻ Giáng Sinh an lànhhhhh</p>
-  </div>
-
-  <!-- Thiệp từ Ông Già Noel: trích điều ước -->
-  <div id="cardWish" class="card">
-    <h3>🎅 Từ Ông Già Noel</h3>
-    <blockquote id="wishText" style="margin:8px 0; font-style:italic;"></blockquote>
-    <p>Thì ra đây là điều ước của con. Mặc dù ta không giúp được,
-    nhưng ta chúc điều ước của con sẽ thành sự thật.</p>
-  </div>
-
-  <!-- Nút Cảm Ơn -->
-  <div class="thanks">
-    <button id="btnThanks" class="btn">Cảm Ơn</button>
-  </div>
-
-  <!-- Tuyết và băng -->
   <div class="snow" id="snow"></div>
-  <div class="ice"  id="ice"></div>
 
   <script>
-    // Tạo tuyết
+    // Tuyết
     const snow = document.getElementById('snow');
-    for(let i=0;i<90;i++){
-      const f = document.createElement('div');
-      f.className = 'flake';
-      f.style.left = Math.random()*100 + 'vw';
-      f.style.setProperty('--dur', (5 + Math.random()*6) + 's');
-      f.style.setProperty('--delay', (Math.random()*3) + 's');
-      f.style.setProperty('--drift', (Math.random()*70 - 35) + 'px');
+    for(let i=0;i<80;i++){
+      const f=document.createElement('div');
+      f.className='flake';
+      f.style.left=Math.random()*100+'vw';
+      f.style.setProperty('--dur',(5+Math.random()*5)+'s');
+      f.style.setProperty('--delay',(Math.random()*5)+'s');
+      f.style.setProperty('--drift',(Math.random()*60-30)+'px');
       snow.appendChild(f);
     }
-    // Tạo băng (mảnh tinh thể)
-    const ice = document.getElementById('ice');
-    for(let i=0;i<60;i++){
-      const s = document.createElement('div');
-      s.className = 'shard';
-      s.style.left = Math.random()*100 + 'vw';
-      s.style.setProperty('--dur', (6 + Math.random()*6) + 's');
-      s.style.setProperty('--delay', (Math.random()*3) + 's');
-      s.style.setProperty('--drift', (Math.random()*70 - 35) + 'px');
-      ice.appendChild(s);
-    }
 
-    // Dựng cây thông bằng chấm từ dưới lên
-    const tree = document.getElementById('tree');
-    const star = document.getElementById('star');
-    let tDelay = 0;
-    const height = 300;            // chiều cao tán lá
-    const baseWidth = 300;         // độ rộng đáy
-    const stepY = 18;              // khoảng cách hàng chấm
-    for(let y=0; y<=height; y+=stepY){
-      const frac = 1 - (y / height);
-      const width = baseWidth * frac;
-      const dots = Math.max(1, Math.floor(width / 14));
-      for(let i=0; i<dots; i++){
-        const d = document.createElement('div');
-        d.className = 'dot';
-        d.style.background = 'radial-gradient(circle, #1fd05e 40%, #1aa34a 70%, transparent 100%)';
-        d.style.boxShadow = '0 0 6px 2px rgba(31,208,94,0.45)';
-        const x = (-width/2) + (dots === 1 ? 0 : (i * (width / (dots-1))));
-        d.style.left = 'calc(50% + ' + x + 'px)';
-        d.style.bottom = (y) + 'px';
-        d.style.animationDelay = (tDelay * 0.08) + 's';
-        tree.appendChild(d);
-      }
-      tDelay++;
-    }
-    // Thân cây bằng chấm nâu
-    const trunkH = 80, trunkW = 70, gap = 10;
-    for(let ty=0; ty<=trunkH; ty+=gap){
-      for(let tx=-trunkW/2; tx<=trunkW/2; tx+=gap){
-        const d = document.createElement('div');
-        d.className = 'dot';
-        d.style.background = 'radial-gradient(circle, #9c6b37 35%, #8b5a2b 70%, transparent 100%)';
-        d.style.boxShadow = '0 0 5px 2px rgba(139,90,43,0.35)';
-        d.style.left = 'calc(50% + ' + tx + 'px)';
-        d.style.bottom = (-trunkH + ty) + 'px';
-        d.style.animationDelay = (tDelay * 0.08) + 's';
-        tree.appendChild(d);
-      }
-      tDelay++;
-    }
-    // Sao bay vào đỉnh sau khi cây dựng xong
-    setTimeout(()=> star.classList.add('fly'), tDelay*80 + 400);
-
-    // Sau sao bay, hiện câu hỏi
-    const panelQ = document.getElementById('panelQ');
-    setTimeout(()=> panelQ.style.display = 'block', tDelay*80 + 2000);
-
-    // Logic nút Có/Không
-    const btnYes = document.getElementById('btnYes');
-    const btnNo  = document.getElementById('btnNo');
-    const hint   = document.getElementById('hint');
-    const panelChoose = document.getElementById('panelChoose');
-
-    btnYes.onclick = () => {
-      // hiệu ứng: vài hộp quà nhỏ văng ra rồi biến mất
-      spawnMiniGifts();
-      // tuyết phủ lên nút
-      btnYes.classList.add('snowy');
-      // hiện panel chọn trái/phải
-      panelChoose.style.display = 'block';
-    };
-
-    let noClicks = 0;
-    btnNo.onclick = () => {
-      // hiện dòng "Nhận quà đi" rồi mờ dần
-      hint.textContent = 'Nhận quà đi…';
-      hint.classList.add('show');
-      setTimeout(()=> hint.classList.remove('show'), 1200);
-      // nút Không càng bấm càng nhỏ
-      noClicks++;
-      const scale = Math.max(0.5, 1 - noClicks*0.08);
-      btnNo.style.transform = 'scale(' + scale + ')';
-    };
-
-    function spawnMiniGifts(){
-      const N = 8 + Math.floor(Math.random()*5);
-      for(let i=0;i<N;i++){
-        const mg = document.createElement('div');
-        mg.style.position = 'fixed';
-        mg.style.left = (window.innerWidth/2) + 'px';
-        mg.style.top  = (window.innerHeight/2 - 40) + 'px';
-        mg.style.width = '16px'; mg.style.height = '16px';
-        mg.style.border = '3px solid ' + (i%2 ? '#ffd86b':'#ffe08a');
-        mg.style.borderRadius = '4px';
-        mg.style.background = i%2 ? 'linear-gradient(135deg,#b22222,#ff4d4d)' : 'linear-gradient(135deg,#0f58c2,#3da5ff)';
-        mg.style.zIndex = 10;
-        document.body.appendChild(mg);
-        const dx = (Math.random()*2-1) * 220;
-        const dy = (Math.random()*2-1) * 160 - 40;
-        const rot = (Math.random()*2-1) * 60;
-        mg.animate([
-          { transform: 'translate(0,0) rotate(0deg)', opacity: 1 },
-          { transform: 'translate('+dx+'px,'+dy+'px) rotate('+rot+'deg)', opacity: 0 }
-        ], { duration: 900 + Math.random()*500, easing: 'ease-out', fill: 'forwards' });
-        setTimeout(()=> mg.remove(), 1500);
-      }
-    }
-
-    // Chọn quà trái/phải
-    const giftLeft  = document.getElementById('giftLeft');
-    const giftRight = document.getElementById('giftRight');
-    const chooseLeft  = document.getElementById('chooseLeft');
-    const chooseRight = document.getElementById('chooseRight');
-
-    const paper     = document.getElementById('paper');
-    const cardRight = document.getElementById('cardRight');
-    const cardWish  = document.getElementById('cardWish');
-    const wishInput = document.getElementById('wish');
-    const sendWish  = document.getElementById('sendWish');
-    const wishText  = document.getElementById('wishText');
-    const thanksBox = document.querySelector('.thanks');
-    const btnThanks = document.getElementById('btnThanks');
-
-    // Cho phép bấm trực tiếp hộp quà hoặc nút lựa chọn
-    giftRight.onclick = chooseRight.onclick = ()=>{
-      cardWish.style.display = 'none';
-      paper.style.display = 'none';
-      cardRight.style.display = 'block';
-      thanksBox.style.display = 'block';
-    };
-    giftLeft.onclick = chooseLeft.onclick = ()=>{
-      cardRight.style.display = 'none';
-      cardWish.style.display = 'none';
-      paper.style.display = 'block';
-    };
-
-    // Gửi điều ước -> hiện thiệp từ Ông Già Noel
-    sendWish.onclick = ()=>{
-      const wish = (wishInput.value || '').trim();
-      if(!wish) return;
-      paper.style.display = 'none';
-      // Gắn lời thì thầm kiểu digital
-      typewriter(document.getElementById('type'), 'Điều ước đã được ghi nhận.', 42);
-      wishText.textContent = '“' + wish + '”';
-      cardWish.style.display = 'block';
-      thanksBox.style.display = 'block';
-    };
-
-    // Nút Cảm Ơn: ẩn hết trừ cây thông + sao + ánh sáng + tuyết
-    btnThanks.onclick = ()=>{
-      panelQ.style.display = 'none';
-      panelChoose.style.display = 'none';
-      cardRight.style.display = 'none';
-      cardWish.style.display = 'none';
-      paper.style.display = 'none';
-      thanksBox.style.display = 'none';
-      document.getElementById('type').textContent = '';
-    };
-
-    // Typewriter cho dòng digital
-    function typewriter(el, text, speed=40) {
-      let i=0;
-      const tick = () => {
-        el.textContent = text.slice(0, i++);
-        if (i <= text.length) setTimeout(tick, speed);
-      };
-      tick();
-    }
-
-    // Lời thì thầm nhẹ sau khi cây hoàn tất
-    setTimeout(()=> typewriter(document.getElementById('type'),
-      'Mình dùng những thuật toán “vô cảm” để gửi hơi ấm thật lòng cho bạn.',
-      42), tDelay*80 + 2800);
-  </script>
-</body>
-</html>
+    // Đèn LED
+    const tree=document.getElementById('tree');
+    const colors=['#ffd86b','#ff4d4d','#3da5ff'];
+    for(let i=0;i<20;i++){
+      const led=document.createElement('div');
