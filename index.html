@@ -23,30 +23,26 @@
       text-shadow: 0 0 8px rgba(255,255,255,0.6);
     }
 
-    /* Tuyết rơi */
-    .snow {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 10;
+    /* Ánh sáng chạy qua */
+    .sweep { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+    .line {
+      position: absolute; height: 160px; left: -40%; right: -40%;
+      background: linear-gradient(to left, transparent, rgba(255,255,255,0.6), transparent);
+      opacity: 0.25; filter: blur(10px);
     }
+    .top { top: 10%; animation: sweepLeft 7s linear infinite; }
+    .bottom { bottom: 10%; animation: sweepRight 7s linear infinite; }
+    @keyframes sweepLeft { 0%{transform:translateX(40%);}50%{transform:translateX(-40%);}100%{transform:translateX(40%);} }
+    @keyframes sweepRight{ 0%{transform:translateX(-40%);}50%{transform:translateX(40%);}100%{transform:translateX(-40%);} }
 
+    /* Tuyết rơi */
+    .snow { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
     .flake {
-      position: absolute;
-      top: -10px;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: white;
-      opacity: 0.8;
+      position: absolute; top: -10px; width: 6px; height: 6px; border-radius: 50%;
+      background: white; opacity: 0.8;
       animation: fall linear var(--dur) var(--delay) infinite;
     }
-
-    @keyframes fall {
-      to {
-        transform: translateY(110vh) translateX(var(--drift));
-      }
-    }
+    @keyframes fall { to { transform: translateY(110vh) translateX(var(--drift)); } }
 
     /* Cây thông */
     .tree {
@@ -58,7 +54,6 @@
       border-right: 150px solid transparent;
       border-bottom: 280px solid #1aa34a;
     }
-
     .trunk {
       position: absolute;
       bottom: -80px;
@@ -68,7 +63,6 @@
       background: #8b5a2b;
       border-radius: 6px;
     }
-
     .star {
       position: absolute;
       top: -120px;
@@ -90,11 +84,7 @@
       animation: blink 2s infinite;
       box-shadow: 0 0 8px rgba(255,255,255,0.6);
     }
-
-    @keyframes blink {
-      0%,100% { opacity: 1; }
-      50% { opacity: 0.4; }
-    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
 
     /* Hộp quà */
     .gift {
@@ -107,39 +97,17 @@
       box-shadow: 0 8px 22px rgba(0,0,0,0.38);
       cursor: pointer;
     }
-
-    .gift.left {
-      left: -200px;
-      background: #b22222;
-    }
-
-    .gift.right {
-      left: 200px;
-      background: #0f58c2;
-    }
-
-    .gift::before,
-    .gift::after {
+    .gift.left  { left: -200px; background: #b22222; }
+    .gift.right { left: 200px; background: #0f58c2; }
+    .gift::before, .gift::after {
       content: "";
       position: absolute;
       background: #ffd86b;
     }
+    .gift::before { width: 12px; height: 100%; left: calc(50% - 6px); top: 0; }
+    .gift::after  { height: 12px; width: 100%; left: 0; top: calc(50% - 6px); }
 
-    .gift::before {
-      width: 12px;
-      height: 100%;
-      left: calc(50% - 6px);
-      top: 0;
-    }
-
-    .gift::after {
-      height: 12px;
-      width: 100%;
-      left: 0;
-      top: calc(50% - 6px);
-    }
-
-    /* Câu hỏi */
+    /* Panel câu hỏi */
     .panel {
       position: absolute;
       top: 50%;
@@ -147,29 +115,29 @@
       text-align: center;
       z-index: 20;
     }
-
     .panel p {
-      font-size: 26px;
-      margin-bottom: 14px;
+      font-size: 28px;
+      margin-bottom: 16px;
     }
-
     .btn {
-      padding: 14px 28px;
-      margin: 6px;
-      font-size: 20px;
+      padding: 16px 32px;
+      margin: 8px;
+      font-size: 22px;
       background: #ffd86b;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
     }
-
-    .btn:hover {
-      filter: brightness(1.2);
-    }
+    .btn:hover { filter: brightness(1.2); }
   </style>
 </head>
 <body>
+  <div class="sweep">
+    <div class="line top"></div>
+    <div class="line bottom"></div>
+  </div>
+
   <h1>GIÁNG SINH ẤM ÁP 🎄❄️</h1>
 
   <div class="tree" id="tree">
@@ -192,7 +160,7 @@
   <script>
     // Tuyết rơi
     const snow = document.getElementById('snow');
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 120; i++) {
       const f = document.createElement('div');
       f.className = 'flake';
       f.style.left = Math.random() * 100 + 'vw';
@@ -239,10 +207,4 @@
 
     function leftGift() {
       updateQuestion('Ghi điều ước của bạn vào giấy Giáng Sinh:', `
-        <input id="wish" placeholder="Điều ước..." style="padding:10px; font-size:16px;">
-        <button class="btn" onclick="sendWish()">Gửi</button>
-      `);
-    }
-
-    function sendWish() {
-      const wish = document.getElementById('wish').value
+        <input id="wish" placeholder="
